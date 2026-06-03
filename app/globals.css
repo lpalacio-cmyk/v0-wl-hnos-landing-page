@@ -4,66 +4,85 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  /* Brand colors */
-  --color-wl-navy: #102250;
-  --color-wl-cyan: #1595BC;
-  --color-wl-green: #1C913D;
-  --color-wl-orange: #EA5E2D;
-  --color-wl-bg: #f3f5f9;
-  --color-wl-border: #e6eaf1;
-  --color-wl-white: #ffffff;
-  --color-wl-gray: #6b7280;
-  --color-wl-gray-light: #9ca3af;
+  /* ─── Brand palette ───────────────────────────────────── */
+  --color-navy:        #0f1e45;
+  --color-navy-light:  #1a2f5e;
+  --color-sky:         #1595bc;
+  --color-sky-light:   #e8f5fa;
+  --color-green:       #1a8a38;
+  --color-green-dark:  #157030;
 
-  /* Semantic tokens */
-  --color-background: #ffffff;
-  --color-foreground: #102250;
-  --color-card: #ffffff;
-  --color-card-foreground: #102250;
-  --color-border: #e6eaf1;
-  --color-muted: #f3f5f9;
-  --color-muted-foreground: #6b7280;
-  --color-primary: #102250;
+  /* ─── Surface / neutral ──────────────────────────────── */
+  --color-surface:     #ffffff;
+  --color-surface-2:   #f7f8fa;
+  --color-surface-3:   #f0f2f6;
+  --color-border:      #e4e8ef;
+  --color-border-soft: #edf0f5;
+
+  /* ─── Text ───────────────────────────────────────────── */
+  --color-text-primary:   #0f1e45;
+  --color-text-secondary: #4b5775;
+  --color-text-muted:     #8892a4;
+
+  /* ─── Semantic tokens ────────────────────────────────── */
+  --color-background:         var(--color-surface);
+  --color-foreground:         var(--color-text-primary);
+  --color-card:               var(--color-surface);
+  --color-card-foreground:    var(--color-text-primary);
+  --color-border:             #e4e8ef;
+  --color-muted:              var(--color-surface-2);
+  --color-muted-foreground:   var(--color-text-secondary);
+  --color-primary:            var(--color-navy);
   --color-primary-foreground: #ffffff;
-  --color-accent: #1595BC;
-  --color-accent-foreground: #ffffff;
-  --color-ring: #1595BC;
-  --radius: 0.75rem;
+  --color-accent:             var(--color-sky);
+  --color-accent-foreground:  #ffffff;
+  --color-ring:               var(--color-sky);
+  --radius:                   0.625rem;
 
-  /* Fonts */
-  --font-sans: var(--font-poppins), 'Poppins', system-ui, sans-serif;
-  --font-body: var(--font-open-sans), 'Open Sans', system-ui, sans-serif;
+  /* ─── Typography ─────────────────────────────────────── */
+  --font-sans: 'Inter Variable', 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter Variable', 'Inter', system-ui, sans-serif;
   --font-mono: 'Geist Mono', monospace;
+
+  /* ─── Shadows ────────────────────────────────────────── */
+  --shadow-card: 0 1px 3px 0 rgb(15 30 69 / 0.06), 0 1px 2px -1px rgb(15 30 69 / 0.04);
+  --shadow-card-hover: 0 4px 16px 0 rgb(15 30 69 / 0.10), 0 1px 3px 0 rgb(15 30 69 / 0.06);
+  --shadow-nav: 0 1px 0 0 #e4e8ef;
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    @apply bg-surface text-text-primary font-body;
+    font-feature-settings: 'cv11', 'ss01';
+    font-variation-settings: 'opsz' 32;
+  }
+  h1, h2, h3, h4, h5 {
+    @apply font-sans tracking-tight;
   }
 }
 
-/* Scroll animation utility */
 @layer utilities {
-  .animate-fade-up {
-    opacity: 0;
-    transform: translateY(28px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
+  /* Section label pill */
+  .label-pill {
+    @apply inline-flex items-center text-sky font-sans font-semibold text-[11px] tracking-[0.1em] uppercase bg-sky/8 border border-sky/18 rounded-full px-3.5 py-1;
   }
-  .animate-fade-up.in-view {
+
+  /* Animated section reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1);
+  }
+  .reveal.visible {
     opacity: 1;
     transform: translateY(0);
-  }
-  .animate-fade-in {
-    opacity: 0;
-    transition: opacity 0.7s ease;
-  }
-  .animate-fade-in.in-view {
-    opacity: 1;
   }
 }
