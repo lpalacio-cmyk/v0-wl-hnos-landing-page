@@ -10,6 +10,7 @@ const nextConfig = {
     return [
       { source: "/precio", destination: "/precio/index.html" },
       { source: "/equilibrio", destination: "/equilibrio/index.html" },
+      { source: "/herramientas", destination: "/herramientas/index.html" },
     ]
   },
 }
