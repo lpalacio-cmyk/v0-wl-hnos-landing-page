@@ -20,48 +20,31 @@ export default function CtaSection() {
   const inView = useInView(ref, { once: true, margin: '-80px' })
 
   return (
-    <section className="py-20 sm:py-24 px-5 sm:px-8 bg-surface-2">
-      <div ref={ref} className="max-w-6xl mx-auto">
+    <section className="py-20 sm:py-28 px-5 sm:px-8 bg-surface">
+      <div ref={ref} className="max-w-3xl mx-auto text-center">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="bg-navy rounded-2xl px-8 py-14 sm:px-14 sm:py-16 text-center relative overflow-hidden"
         >
-          {/* Subtle dot pattern */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.04]"
-            aria-hidden="true"
-            style={{
-              backgroundImage: 'radial-gradient(circle, #1595bc 1px, transparent 1px)',
-              backgroundSize: '24px 24px',
-            }}
-          />
+          <h2 className="font-sans font-bold text-[1.75rem] sm:text-[2.25rem] text-navy text-balance leading-[1.15]">
+            ¿Listo para profesionalizar la gestión de tu empresa?
+          </h2>
 
-          <div className="relative">
-            <p className="inline-flex items-center text-sky font-sans font-semibold text-[11px] tracking-[0.1em] uppercase bg-sky/15 border border-sky/20 rounded-full px-3.5 py-1 mb-6">
-              Sin costo ni compromiso
-            </p>
+          <p className="mt-5 text-[15px] sm:text-[16px] text-text-secondary leading-[1.75] max-w-[520px] mx-auto">
+            Agendá una reunión inicial para conocer tu situación y evaluar cómo podemos generar valor a tu negocio.
+          </p>
 
-            <h2 className="font-sans font-bold text-[1.625rem] sm:text-[2.125rem] text-white text-balance leading-[1.2]">
-              ¿Listo para profesionalizar<br className="hidden sm:block" /> la gestión de tu empresa?
-            </h2>
-
-            <p className="mt-4 text-[15px] text-white/60 leading-[1.75] max-w-[480px] mx-auto">
-              Agendá una reunión inicial para conocer tu situación y evaluar cómo podemos generar valor a tu negocio.
-            </p>
-
-            <div className="mt-8">
-              <Link
-                href={WA_LINK}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-green hover:bg-green-dark text-white font-sans font-semibold text-[15px] px-7 py-3 rounded-lg transition-all duration-150 shadow-sm hover:shadow-md"
-              >
-                <WhatsAppIcon size={17} />
-                Agendar reunión
-              </Link>
-            </div>
+          <div className="mt-8">
+            <Link
+              href={WA_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-green hover:bg-green-dark text-white font-sans font-semibold text-[15px] px-7 py-3.5 rounded-lg transition-all duration-150 shadow-sm hover:shadow-md"
+            >
+              <WhatsAppIcon size={17} />
+              Agendar reunión
+            </Link>
           </div>
         </motion.div>
       </div>

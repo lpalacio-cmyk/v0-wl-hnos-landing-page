@@ -83,49 +83,49 @@ export default function ToolsSection() {
               >
                 <Link
                   href={tool.href}
-                  className="group flex flex-col h-full bg-surface rounded-xl border border-border hover:border-sky/30 p-6 sm:p-7 shadow-card hover:shadow-card-hover transition-all duration-200"
+                  className="group flex flex-col h-full bg-surface rounded-xl border border-border hover:border-sky/30 p-5 sm:p-6 shadow-card hover:shadow-card-hover transition-all duration-200"
                 >
                   {/* Header row */}
-                  <div className="flex items-start justify-between gap-4 mb-5">
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
                       tool.accent === 'sky'
                         ? 'bg-sky/10 text-sky group-hover:bg-sky group-hover:text-white'
                         : 'bg-navy/8 text-navy group-hover:bg-navy group-hover:text-white'
                     } transition-all duration-200`}>
-                      <Icon size={20} strokeWidth={1.75} />
+                      <Icon size={18} strokeWidth={1.75} />
                     </div>
                     <span className="text-[11px] font-semibold text-text-muted bg-surface-3 px-2.5 py-1 rounded-full border border-border-soft">
                       {tool.label}
                     </span>
                   </div>
 
-                  {/* Mini mockup */}
-                  <div className="mb-5 rounded-lg bg-surface-2 border border-border-soft p-3.5">
-                    <div className="space-y-2">
-                      <div className="h-2 w-2/5 rounded-full bg-border" />
-                      <div className="h-9 rounded-lg bg-surface border border-border-soft flex items-center px-3 gap-2">
-                        <span className="text-[11px] text-text-muted font-semibold">$</span>
+                  {/* Compact mini mockup */}
+                  <div className="mb-4 rounded-lg bg-surface-2 border border-border-soft p-3">
+                    <div className="space-y-1.5">
+                      <div className="h-1.5 w-2/5 rounded-full bg-border" />
+                      <div className="h-7 rounded-md bg-surface border border-border-soft flex items-center px-3 gap-2">
+                        <span className="text-[10px] text-text-muted font-semibold">$</span>
                         <div className="h-1.5 w-20 rounded-full bg-sky/20" />
                       </div>
-                      <div className="h-2 w-1/3 rounded-full bg-border" />
-                      <div className="h-9 rounded-lg bg-surface border border-border-soft flex items-center px-3 gap-2">
-                        <span className="text-[11px] text-text-muted font-semibold">%</span>
+                      <div className="h-1.5 w-1/3 rounded-full bg-border" />
+                      <div className="h-7 rounded-md bg-surface border border-border-soft flex items-center px-3 gap-2">
+                        <span className="text-[10px] text-text-muted font-semibold">%</span>
                         <div className="h-1.5 w-14 rounded-full bg-sky/20" />
                       </div>
-                      <div className="h-9 rounded-lg bg-sky flex items-center justify-center gap-1.5">
-                        <div className="h-2 w-16 rounded-full bg-white/40" />
+                      <div className="h-7 rounded-md bg-sky flex items-center justify-center gap-1.5">
+                        <div className="h-1.5 w-16 rounded-full bg-white/40" />
                       </div>
                     </div>
                   </div>
 
-                  <h3 className="font-sans font-bold text-[15px] text-navy leading-snug mb-2">
+                  <h3 className="font-sans font-bold text-[15px] text-navy leading-snug mb-1.5">
                     {tool.title}
                   </h3>
-                  <p className="text-[13.5px] text-text-secondary leading-[1.65] flex-1">
+                  <p className="text-[13px] text-text-secondary leading-[1.6] flex-1">
                     {tool.desc}
                   </p>
 
-                  <div className="mt-5 flex items-center gap-1.5 text-sky text-[13.5px] font-semibold group-hover:gap-2.5 transition-all duration-200">
+                  <div className="mt-4 flex items-center gap-1.5 text-sky text-[13px] font-semibold group-hover:gap-2.5 transition-all duration-200">
                     Abrir herramienta
                     <ArrowRight size={14} />
                   </div>
@@ -134,6 +134,23 @@ export default function ToolsSection() {
             )
           })}
         </div>
+
+        {/* Ver todas las herramientas */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.45, delay: 0.2 }}
+          className="mt-8 flex justify-center"
+        >
+          <Link
+            href="/herramientas"
+            className="inline-flex items-center gap-2 border border-border hover:border-sky/40 text-text-secondary hover:text-sky font-sans font-semibold text-[13.5px] px-5 py-2.5 rounded-lg transition-all duration-150 bg-surface hover:bg-sky/5"
+          >
+            Ver todas las herramientas
+            <ArrowRight size={14} />
+          </Link>
+        </motion.div>
       </div>
     </section>
   )

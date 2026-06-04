@@ -115,7 +115,158 @@ export default function Hero() {
   )
 }
 
+// Sparkline mini SVG path from an array of values (0–100)
+function Sparkline({ values, color }: { values: number[]; color: string }) {
+  const w = 44
+  const h = 20
+  const max = Math.max(...values)
+  const min = Math.min(...values)
+  const range = max - min || 1
+  const pts = values
+    .map((v, i) => {
+      const x = (i / (values.length - 1)) * w
+      const y = h - ((v - min) / range) * h
+      return `${x},${y}`
+    })
+    .join(' ')
+  return (
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} aria-hidden="true" className="shrink-0">
+      <polyline
+        points={pts}
+        fill="none"
+        stroke={color}
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+// Cashflow SVG curve chart
+function CashflowChart({ labels }: { labels: string[] }) {
+  const w = 340
+  const h = 70
+  // data: millions ARS
+  const data = [3.1, 4.2, 2.8, 5.0, 3.6, 4.8]
+  const minLine = 3.0 // "mínimo operativo"
+  const alertIdx = 2 // índice con punto de atención
+  const max = Math.max(...data) + 0.5
+  const min = Math.min(...data, minLine) - 0.3
+  const range = max - min
+
+  const toX = (i: number) => 12 + (i / (data.length - 1)) * (w - 24)
+  const toY = (v: number) => h - 8 - ((v - min) / range) * (h - 16)
+
+  const pts = data.map((v, i) => `${toX(i)},${toY(v)}`).join(' ')
+  const minY = toY(minLine)
+
+  // area fill under the curve (closed path)
+  const areaPath =
+    `M ${toX(0)},${toY(data[0])} ` +
+    data.map((v, i) => `L ${toX(i)},${toY(v)}`).join(' ') +
+    ` L ${toX(data.length - 1)},${h} L ${toX(0)},${h} Z`
+
+  return (
+    <svg width="100%" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" aria-hidden="true">
+      {/* Area fill */}
+      <path d={areaPath} fill="#1595BC" fillOpacity="0.08" />
+      {/* Min line */}
+      <line x1={12} y1={minY} x2={w - 12} y2={minY} stroke="#1595BC" strokeWidth="1" strokeDasharray="4 3" opacity="0.45" />
+      <text x={w - 10} y={minY - 3} textAnchor="end" fontSize="7" fill="#1595BC" opacity="0.7">mín. op.</text>
+      {/* Alert zone — very subtle */}
+      <rect
+        x={toX(alertIdx) - 10}
+        y={0}
+        width={20}
+        height={h}
+        fill="#EF4444"
+        fillOpacity="0.05"
+        rx="2"
+      />
+      {/* Curve */}
+      <polyline points={pts} fill="none" stroke="#1595BC" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      {/* Alert dot */}
+      <circle cx={toX(alertIdx)} cy={toY(data[alertIdx])} r="3.5" fill="#F59E0B" stroke="white" strokeWidth="1.2" />
+      {/* Normal dots */}
+      {data.map((v, i) =>
+        i !== alertIdx ? (
+          <circle key={i} cx={toX(i)} cy={toY(v)} r="2.5" fill="#1595BC" stroke="white" strokeWidth="1" />
+        ) : null
+      )}
+      {/* X-axis labels */}
+      {labels.map((lbl, i) => (
+        <text key={i} x={toX(i)} y={h - 1} textAnchor="middle" fontSize="7.5" fill="#8C96A6">
+          {lbl}
+        </text>
+      ))}
+    </svg>
+  )
+}
+
 function DashboardMockup() {
+  // Dynamic: last 6 months ending this month
+  const now = new Date()
+  const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+  const chartLabels = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - 5 + i, 1)
+    return monthNames[d.getMonth()]
+  })
+
+  // Dynamic due dates for current month
+  const m = now.getMonth() // 0-based
+  const y = now.getFullYear()
+  const pad = (n: number) => String(n).padStart(2, '0')
+  const fmt = (day: number, mo: number, yr: number) => `${pad(day)}/${pad(mo + 1)}/${yr}`
+
+  // IVA: 18th of current month; if already past, next month
+  const ivaDay = 18
+  const ivaDone = now.getDate() > ivaDay
+  const ivaDate = fmt(ivaDay, ivaDone ? (m + 1) % 12 : m, ivaDone && m === 11 ? y + 1 : y)
+  const ivaLabel = `IVA — ${monthNames[ivaDone ? (m + 1) % 12 : m]}`
+
+  // Ingresos Brutos: 22nd of current month
+  const iibbDay = 22
+  const iibbDate = fmt(iibbDay, m, y)
+
+  // Formulario 931: 12th of next month
+  const nextM = (m + 1) % 12
+  const nextY = m === 11 ? y + 1 : y
+  const f931Date = fmt(12, nextM, nextY)
+
+  const dues = [
+    { label: ivaLabel, date: ivaDate, done: ivaDone },
+    { label: 'Ingresos Brutos', date: iibbDate, done: false },
+    { label: 'Formulario 931', date: f931Date, done: false },
+  ]
+
+  const kpis = [
+    {
+      label: 'Ventas',
+      value: '$4.8M',
+      pct: '+11%',
+      up: true,
+      spark: [30, 42, 38, 55, 48, 62],
+      color: '#1595BC',
+    },
+    {
+      label: 'Resultado',
+      value: '+18.4%',
+      pct: '+3.2pp',
+      up: true,
+      spark: [20, 28, 22, 35, 30, 42],
+      color: '#1C913D',
+    },
+    {
+      label: 'Saldo de caja',
+      value: '$920K',
+      pct: '-6%',
+      up: false,
+      spark: [60, 55, 68, 50, 45, 40],
+      color: '#F59E0B',
+    },
+  ]
+
   return (
     <div className="w-full max-w-[420px] rounded-2xl border border-border bg-surface shadow-card-hover overflow-hidden">
       {/* Window bar */}
@@ -128,58 +279,47 @@ function DashboardMockup() {
 
       <div className="p-5 space-y-4">
         {/* KPI row */}
-        <div className="grid grid-cols-3 gap-3">
-          {[
-            { label: 'Resultado', value: '+18.4%', color: 'text-green' },
-            { label: 'Facturado', value: '$4.2M', color: 'text-navy' },
-            { label: 'Posición', value: 'Positiva', color: 'text-sky' },
-          ].map((kpi) => (
-            <div key={kpi.label} className="bg-surface-2 rounded-xl p-3 border border-border-soft">
-              <p className="text-[10px] text-text-muted font-medium mb-1">{kpi.label}</p>
-              <p className={`font-bold text-[13px] ${kpi.color}`}>{kpi.value}</p>
+        <div className="grid grid-cols-3 gap-2.5">
+          {kpis.map((kpi) => (
+            <div key={kpi.label} className="bg-surface-2 rounded-xl p-3 border border-border-soft flex flex-col gap-1">
+              <p className="text-[9.5px] text-text-muted font-semibold uppercase tracking-wide leading-none">{kpi.label}</p>
+              <p className="font-bold text-[13px] text-navy leading-tight">{kpi.value}</p>
+              <div className="flex items-center justify-between gap-1">
+                <span
+                  className={`text-[10px] font-semibold flex items-center gap-0.5 ${kpi.up ? 'text-green' : 'text-amber-500'}`}
+                >
+                  {kpi.up ? '▲' : '▼'} {kpi.pct}
+                </span>
+                <Sparkline values={kpi.spark} color={kpi.color} />
+              </div>
             </div>
           ))}
         </div>
 
-        {/* Chart placeholder */}
+        {/* Cashflow chart */}
         <div className="rounded-xl border border-border-soft bg-surface-2 p-4">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-2">
             <div>
               <p className="text-[11px] font-semibold text-navy">Flujo de caja mensual</p>
-              <p className="text-[10px] text-text-muted">Últimos 6 meses</p>
+              <p className="text-[9.5px] text-text-muted">Últimos 6 meses · ● atención de caja</p>
             </div>
-            <span className="text-[10px] text-green font-semibold bg-green/8 px-2 py-0.5 rounded-full">+12%</span>
+            <span className="text-[10px] text-sky font-semibold bg-sky/8 border border-sky/15 px-2 py-0.5 rounded-full">+12%</span>
           </div>
-          {/* Bars */}
-          <div className="flex items-end gap-2 h-16">
-            {[55, 70, 45, 80, 65, 90].map((h, i) => (
-              <div key={i} className="flex-1 flex flex-col justify-end">
-                <div
-                  className={`rounded-t-sm transition-all ${i === 5 ? 'bg-sky' : 'bg-sky/25'}`}
-                  style={{ height: `${h}%` }}
-                />
-              </div>
-            ))}
-          </div>
-          <div className="flex justify-between mt-1.5">
-            {['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'].map((m) => (
-              <span key={m} className="text-[9px] text-text-muted flex-1 text-center">{m}</span>
-            ))}
-          </div>
+          <CashflowChart labels={chartLabels} />
         </div>
 
-        {/* Tasks list */}
+        {/* Due dates */}
         <div className="rounded-xl border border-border-soft bg-surface-2 p-4 space-y-2.5">
           <p className="text-[11px] font-semibold text-navy mb-1">Próximos vencimientos</p>
-          {[
-            { label: 'IVA — Junio', date: '18/06', done: true },
-            { label: 'IIBB Catamarca', date: '20/06', done: false },
-            { label: 'Form. 931', date: '12/07', done: false },
-          ].map((t) => (
+          {dues.map((t) => (
             <div key={t.label} className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-2">
                 <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${t.done ? 'bg-green border-green' : 'border-border'}`}>
-                  {t.done && <svg width="8" height="8" viewBox="0 0 8 8" fill="none"><path d="M1.5 4L3 5.5L6.5 2" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                  {t.done && (
+                    <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+                      <path d="M1.5 4L3 5.5L6.5 2" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  )}
                 </div>
                 <span className={`text-[11px] font-medium ${t.done ? 'text-text-muted line-through' : 'text-navy'}`}>{t.label}</span>
               </div>

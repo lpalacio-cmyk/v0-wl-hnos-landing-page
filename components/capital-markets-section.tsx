@@ -39,16 +39,7 @@ export default function CapitalMarketsSection() {
   const inView = useInView(ref, { once: true, margin: '-80px' })
 
   return (
-    <section className="py-20 sm:py-24 px-5 sm:px-8 bg-navy relative overflow-hidden">
-      {/* Subtle texture */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.03]"
-        aria-hidden="true"
-        style={{
-          backgroundImage: 'radial-gradient(circle, #1595bc 1px, transparent 1px)',
-          backgroundSize: '28px 28px',
-        }}
-      />
+    <section className="py-20 sm:py-24 px-5 sm:px-8 relative overflow-hidden" style={{ backgroundColor: '#102250' }}>
 
       <div ref={ref} className="relative max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-[1fr_1fr] gap-12 lg:gap-20 items-center">
